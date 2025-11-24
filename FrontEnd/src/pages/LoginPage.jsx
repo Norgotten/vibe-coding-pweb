@@ -1,103 +1,76 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../api";
+import api, { setAuthToken } from "../api";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  const handleChange = (e) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+
     try {
-      const res = await api.post("/auth/login", form);
+      const res = await api.post("/auth/login", { email, password });
+
       const { token, user } = res.data;
 
-      // simpan token & user di localStorage
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      // simpan token & (opsional) user
+      setAuthToken(token);
+      localStorage.setItem("kompor_user", JSON.stringify(user));
 
+      // pindah ke dashboard
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
       setError(
-        err.response?.data?.message || "Login gagal, cek email/password."
+        err.response?.data?.message || "Login gagal, cek email / password."
       );
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
     <div style={{ padding: "2rem", maxWidth: 400, margin: "0 auto" }}>
       <h1>KoMpor – Login</h1>
-      <p>Masuk untuk mengelola laporan kos.</p>
 
       {error && (
-        <div
-          style={{
-            background: "#ffe5e5",
-            color: "#b00020",
-            padding: "0.5rem 1rem",
-            marginBottom: "1rem",
-            borderRadius: 4,
-          }}
-        >
+        <p style={{ color: "red", marginTop: "0.5rem" }}>
           {error}
-        </div>
+        </p>
       )}
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: "1rem" }}>
-          <label>
-            Email
-            <br />
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              style={{ width: "100%", padding: "0.5rem" }}
-            />
-          </label>
+      <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label>Email</label>
+          <br />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{ width: "100%", padding: "0.5rem" }}
+          />
         </div>
 
-        <div style={{ marginBottom: "1rem" }}>
-          <label>
-            Password
-            <br />
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              style={{ width: "100%", padding: "0.5rem" }}
-            />
-          </label>
+        <div style={{ marginBottom: "0.75rem" }}>
+          <label>Password</label>
+          <br />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ width: "100%", padding: "0.5rem" }}
+          />
         </div>
 
         <button
           type="submit"
-          disabled={loading}
-          style={{
-            padding: "0.6rem 1.2rem",
-            cursor: "pointer",
-            width: "100%",
-          }}
+          style={{ padding: "0.5rem 1rem", marginTop: "0.5rem" }}
         >
-          {loading ? "Login..." : "Login"}
+          Login
         </button>
       </form>
 

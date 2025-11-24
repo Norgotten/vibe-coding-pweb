@@ -3,14 +3,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
 import ReportFormPage from "./pages/ReportFormPage.jsx";
-
-function RequireAuth({ children }) {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-  return children;
-}
+import RequireAuth from "./RequireAuth.jsx";
 
 function App() {
   return (
