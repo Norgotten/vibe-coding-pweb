@@ -1,9 +1,20 @@
 const express = require("express");
 const Report = require("../models/Report");
 const upload = require("../middleware/upload");
-const auth = require("../middleware/auth"); // <--- ini
+const auth = require("../middleware/auth");
 
 const router = express.Router();
+
+// GET semua laporan (public)
+router.get("/", async (req, res) => {
+  try {
+    const reports = await Report.find().sort({ createdAt: -1 });
+    res.json(reports);
+  } catch (err) {
+    console.error("Error get reports:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // GET satu laporan berdasarkan id (public)
 router.get("/:id", async (req, res) => {

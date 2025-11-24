@@ -17,81 +17,93 @@ function RegisterPage() {
 
     try {
       await api.post("/auth/register", { name, email, password });
-
-      setSuccessMsg("Register berhasil! Silakan login.");
-      // opsional: langsung navigate ke login
+      setSuccessMsg("Register berhasil! Mengarahkan ke halaman login...");
       setTimeout(() => navigate("/login"), 800);
     } catch (err) {
       console.error(err);
       setError(
-        err.response?.data?.message || "Register gagal, coba lagi."
+        err.response?.data?.message || "Register gagal, coba lagi nanti."
       );
     }
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: 400, margin: "0 auto" }}>
-      <h1>KoMpor – Register</h1>
+    <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-300/60 p-8 space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            KoMpor <span className="text-blue-600">– Register</span>
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Buat akun dulu supaya laporanmu tercatat rapi.
+          </p>
+        </div>
 
-      {error && (
-        <p style={{ color: "red", marginTop: "0.5rem" }}>
-          {error}
+        {error && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+        {successMsg && (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+            {successMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Nama</label>
+            <input
+              type="text"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/20"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nama panggilanmu"
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">Email</label>
+            <input
+              type="email"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/20"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="misal: anakkos@example.com"
+              required
+            />
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-slate-700">
+              Password
+            </label>
+            <input
+              type="password"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:bg-white focus:ring-2 focus:ring-blue-600/20"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimal 6 karakter"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full rounded-full bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/40 hover:bg-blue-700 transition transform hover:-translate-y-0.5"
+          >
+            Register
+          </button>
+        </form>
+
+        <p className="text-xs text-slate-500 text-center">
+          Sudah punya akun?{" "}
+          <Link to="/login" className="font-semibold">
+            Login
+          </Link>
         </p>
-      )}
-      {successMsg && (
-        <p style={{ color: "green", marginTop: "0.5rem" }}>
-          {successMsg}
-        </p>
-      )}
-
-      <form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
-        <div style={{ marginBottom: "0.75rem" }}>
-          <label>Nama</label>
-          <br />
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "0.75rem" }}>
-          <label>Email</label>
-          <br />
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-
-        <div style={{ marginBottom: "0.75rem" }}>
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: "0.5rem" }}
-          />
-        </div>
-
-        <button
-          type="submit"
-          style={{ padding: "0.5rem 1rem", marginTop: "0.5rem" }}
-        >
-          Register
-        </button>
-      </form>
-
-      <p style={{ marginTop: "1rem" }}>
-        Sudah punya akun? <Link to="/login">Login</Link>
-      </p>
+      </div>
     </div>
   );
 }
